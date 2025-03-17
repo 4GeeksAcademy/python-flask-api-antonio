@@ -4,14 +4,21 @@ app = Flask(__name__)
 todos = [ { "label": "My first task", "done": False } ]
 
 @app.route('/todos', methods=['GET'])
-def hello_world():
-    return jsonify(todos)
+def get_todos():
+    return jsonify(todos), 200
 
 @app.route('/todos', methods=['POST'])
 def add_new_todo():
     request_body = request.json
-    print("Incoming request with the following body", request_body)
-    return 'Response for the POST todo'
+    task = request_body.get('label')
+
+    new_todo = {
+        'id': len(todos) + 1,
+        'task': task,
+        'done': False
+    }
+    todos.append(new_todo)
+    return jsonify({ "message" : "task successfully added" })
 
 
 # These two lines should always be at the end of your app.py file
